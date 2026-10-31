@@ -1,0 +1,26 @@
+# t06 — How the package would run the service, and the moon door
+# Date: 2026-10-31 00:38 UTC
+
+$ cat rootfs/usr/lib/systemd/system/zerotier-one.service
+[Unit]
+Description=ZeroTier One
+After=network-online.target network.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/sbin/zerotier-one
+Restart=always
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+$ zerotier-cli -D<ztroot> peers
+200 peers
+<ztaddr>   <ver>  <role> <lat> <link>   <lastTX> <lastRX> <path>
+62f865ae71 -      PLANET    -1 RELAY
+778cde7190 -      PLANET    -1 RELAY
+cafe04eba9 -      PLANET    -1 RELAY
+cafe9efeb9 -      PLANET    -1 RELAY
+NOTE: Currently tunneling through a TCP relay. Ensure that UDP is not blocked.
+$ zerotier-cli -D<ztroot> orbit   (no arguments: usage for joining a moon)
+exit=0

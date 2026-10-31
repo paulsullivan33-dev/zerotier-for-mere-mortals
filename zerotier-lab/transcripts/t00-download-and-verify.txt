@@ -1,0 +1,131 @@
+# t00 — Downloading ZeroTier from the official source
+# Date: 2026-10-31 00:33 UTC
+
+$ curl -s https://download.zerotier.com/debian/noble/pool/main/z/zerotier-one/
+zerotier-one_1.14.0_amd64.deb
+zerotier-one_1.14.1_amd64.deb
+zerotier-one_1.14.2_amd64.deb
+zerotier-one_1.16.0-2_amd64.deb
+zerotier-one_1.16.0_amd64.deb
+zerotier-one_1.16.1_amd64.deb
+zerotier-one_1.16.2_amd64.deb
+
+$ curl -LO https://download.zerotier.com/debian/noble/pool/main/z/zerotier-one/zerotier-one_1.16.2_amd64.deb
+-rw-rw---- 1 root root 3514154 Oct 31 00:33 zerotier-one_1.16.2_amd64.deb
+
+# The repo metadata: Release, its signature, and the Packages index
+$ curl -sO https://download.zerotier.com/debian/noble/dists/noble/Release
+$ curl -sO https://download.zerotier.com/debian/noble/dists/noble/Release.gpg
+$ curl -s https://download.zerotier.com/debian/noble/dists/noble/main/binary-amd64/Packages.gz | gunzip > Packages
+total 3464
+-rw-rw---- 1 root root    6010 Oct 31 00:33 Packages
+-rw-rw---- 1 root root   19611 Oct 31 00:33 Release
+-rw-rw---- 1 root root     862 Oct 31 00:33 Release.gpg
+-rw-rw---- 1 root root 3514154 Oct 31 00:33 zerotier-one_1.16.2_amd64.deb
+
+$ grep -A6 "^Package: zerotier-one" Packages | grep -B1 -A5 "1.16.2" (the stanza for our package)
+Package: zerotier-one
+Version: 1.16.2
+Filename: pool/main/z/zerotier-one/zerotier-one_1.16.2_amd64.deb
+SHA256: fe78e8d3b03fe77d1607bffd67dcd6723e2bacc4ac063afb5e311400fda12ea6
+Package: zerotier-one
+Version: 1.16.1
+Filename: pool/main/z/zerotier-one/zerotier-one_1.16.1_amd64.deb
+SHA256: f954db7f3dd349aff58b528c536ecbe2f2f4f861cbce542735c1a2feda93ec6d
+Package: zerotier-one
+Version: 1.16.0-2
+Filename: pool/main/z/zerotier-one/zerotier-one_1.16.0-2_amd64.deb
+SHA256: 111e0d27f6b7598142a115fc5d54c6f55d091fff06532971b47a3dd2b17e97e8
+Package: zerotier-one
+Version: 1.16.0
+Filename: pool/main/z/zerotier-one/zerotier-one_1.16.0_amd64.deb
+SHA256: ae430ddfb1430f4f61f68e7cdd7bc3f3291b099a313b8f7d2bc2cefb72c26556
+Package: zerotier-one
+Version: 1.14.2
+Filename: pool/main/z/zerotier-one/zerotier-one_1.14.2_amd64.deb
+SHA256: fe7851d4eb99af38822939241f85070287f167ecaa3cf38bf4d075121631265f
+Package: zerotier-one
+Version: 1.14.1
+Filename: pool/main/z/zerotier-one/zerotier-one_1.14.1_amd64.deb
+SHA256: 74d6a051b05ee6f63256e7701ca5c90d5a55a0e632c9fd8467fa7a647a013508
+Package: zerotier-one
+Version: 1.14.0
+Filename: pool/main/z/zerotier-one/zerotier-one_1.14.0_amd64.deb
+SHA256: ac7111e1f64f45d0b600c7c6ff549cb870a570ae3bcb64428d92fda7f99a07bc
+
+$ sha256sum zerotier-one_1.16.2_amd64.deb
+fe78e8d3b03fe77d1607bffd67dcd6723e2bacc4ac063afb5e311400fda12ea6  zerotier-one_1.16.2_amd64.deb
+# Packages index says: fe78e8d3b03fe77d1607bffd67dcd6723e2bacc4ac063afb5e311400fda12ea6
+
+# Now prove the index itself is genuine: ZeroTier publishes its repo signing key at
+# https://download.zerotier.com/deb/zt.asc (the same key install.zerotier.com uses).
+$ curl -s https://download.zerotier.com/deb/zt.asc | gpg --import
+gpg: keybox '/home/hatch/workspace/zerotier-labwork/gnupg/pubring.kbx' created
+gpg: no valid OpenPGP data found.
+gpg: Total number processed: 0
+$ gpg --list-keys --with-fingerprint
+gpg: /home/hatch/workspace/zerotier-labwork/gnupg/trustdb.gpg: trustdb created
+
+$ gpg --verify Release.gpg Release
+gpg: Signature made Wed May 27 16:22:26 2026 UTC
+gpg:                using RSA key 74A5E9C458E1A431F1DA57A71657198823E52A61
+gpg:                issuer "contact@zerotier.com"
+gpg: Can't check signature: No public key
+
+# And the Release file vouches for the Packages index hash:
+$ grep -A3 "binary-amd64/Packages.gz" Release | head -4 ; sha256sum of local Packages.gz original
+ 14bb0edda96489f6bb97ea56c3f407a9e259bf989de209edce7acde03f04b224     1672 main/binary-amd64/Packages.gz
+14bb0edda96489f6bb97ea56c3f407a9e259bf989de209edce7acde03f04b224  Packages.gz.check
+
+# zt.asc at that path returned no key data — check what it is, then fetch the key
+# the signature names (fingerprint ...1657198823E52A61, contact@zerotier.com)
+$ curl -sI https://download.zerotier.com/deb/zt.asc | head -3
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 404 Not Found
+# The install script (install.zerotier.com) is the canonical route; it embeds the key id.
+$ curl -s https://install.zerotier.com | grep -iE "key|gpg" | head -8
+rm -f /tmp/zt-gpg-key
+echo '-----BEGIN PGP PUBLIC KEY BLOCK-----' >/tmp/zt-gpg-key
+cat >>/tmp/zt-gpg-key << END_OF_KEY
+Comment: GPGTools - https://gpgtools.org
+aWduaW5nIEtleSkgPGNvbnRhY3RAemVyb3RpZXIuY29tPokCNwQTAQoAIQUCV1Cr
+END_OF_KEY
+echo '-----END PGP PUBLIC KEY BLOCK-----' >>/tmp/zt-gpg-key
+	if [ -d /etc/apt/trusted.gpg.d ]; then
+
+# Extract the embedded key exactly as the official install script does:
+40 zt-key.asc
+$ gpg --import zt-key.asc
+gpg: no valid OpenPGP data found.
+gpg: Total number processed: 0
+$ gpg --list-keys --with-fingerprint
+
+$ gpg --verify Release.gpg Release
+gpg: Signature made Wed May 27 16:22:26 2026 UTC
+gpg:                using RSA key 74A5E9C458E1A431F1DA57A71657198823E52A61
+gpg:                issuer "contact@zerotier.com"
+gpg: Can't check signature: No public key
+
+# Rebuilt the key file the same way the script does (header + heredoc body + footer):
+$ gpg --import zt-key.asc
+gpg: key 1657198823E52A61: public key "ZeroTier, Inc. (ZeroTier Support and Release Signing Key) <contact@zerotier.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+$ gpg --list-keys --with-fingerprint
+/home/hatch/workspace/zerotier-labwork/gnupg/pubring.kbx
+--------------------------------------------------------
+pub   rsa4096 2016-06-02 [SC]
+      74A5 E9C4 58E1 A431 F1DA  57A7 1657 1988 23E5 2A61
+uid           [ unknown] ZeroTier, Inc. (ZeroTier Support and Release Signing Key) <contact@zerotier.com>
+sub   rsa4096 2016-06-02 [E]
+
+
+$ gpg --verify Release.gpg Release
+gpg: Signature made Wed May 27 16:22:26 2026 UTC
+gpg:                using RSA key 74A5E9C458E1A431F1DA57A71657198823E52A61
+gpg:                issuer "contact@zerotier.com"
+gpg: Good signature from "ZeroTier, Inc. (ZeroTier Support and Release Signing Key) <contact@zerotier.com>" [unknown]
+gpg: WARNING: The key's User ID is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 74A5 E9C4 58E1 A431 F1DA  57A7 1657 1988 23E5 2A61

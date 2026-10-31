@@ -1,0 +1,60 @@
+# t01 — Extract the .deb into a private tree (no system install)
+# Date: 2026-10-31 00:34 UTC
+
+$ dpkg-deb -x pkg/zerotier-one_1.16.2_amd64.deb rootfs/
+$ find rootfs -type f | sort
+rootfs/etc/init.d/zerotier-one
+rootfs/etc/init/zerotier-one.conf
+rootfs/usr/lib/systemd/system/zerotier-one.service
+rootfs/usr/sbin/zerotier-one
+rootfs/usr/share/doc/zerotier-one/changelog.gz
+rootfs/usr/share/doc/zerotier-one/copyright
+rootfs/usr/share/man/man1/zerotier-cli.1.gz
+rootfs/usr/share/man/man1/zerotier-idtool.1.gz
+rootfs/usr/share/man/man8/zerotier-one.8.gz
+rootfs/var/lib/zerotier-one/zerotier-one.te
+
+$ dpkg-deb -f pkg/zerotier-one_1.16.2_amd64.deb Package Version Architecture Depends Description
+Package: zerotier-one
+Version: 1.16.2
+Architecture: amd64
+Depends: adduser, libstdc++6 (>= 5), openssl
+Description: ZeroTier network virtualization service
+ ZeroTier One lets you join ZeroTier virtual networks and
+ have them appear as tun/tap ports on your system. See
+ https://www.zerotier.com/ for instructions and
+ documentation.
+
+$ file rootfs/usr/sbin/zerotier-one
+rootfs/usr/sbin/zerotier-one: ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=4e94c221aae16edb4ec591f8b40d752e9308c8ea, for GNU/Linux 3.2.0, stripped
+$ ls -la rootfs/usr/sbin/
+total 10672
+drwxr-xr-x 1 root root       78 Oct 31 00:34 .
+drwxr-xr-x 1 root root       24 May 26 08:00 ..
+lrwxrwxrwx 1 root root       12 May 26 08:00 zerotier-cli -> zerotier-one
+lrwxrwxrwx 1 root root       12 May 26 08:00 zerotier-idtool -> zerotier-one
+-rwxr-xr-x 1 root root 10919856 May 26 08:00 zerotier-one
+
+# zerotier-cli and zerotier-idtool are symlinks to the one binary:
+$ rootfs/usr/sbin/zerotier-one -v   (with no home yet, -v prints version and exits)
+1.16.2
+exit=0
+
+$ zerotier-one   (usage, via the multi-call binary)
+
+# LAB NOTE — an accident, kept in the record because it teaches something real:
+# Running "zerotier-one" with NO arguments does not print usage. It starts the
+# service immediately, using the compiled-in default home /var/lib/zerotier-one,
+# and generates an identity there. (ZeroTier assumes a bare invocation means
+# "be the service" — the init system normally does this.) The stray daemon was
+# stopped and its home deleted; everything below uses the lab home instead.
+# For the record, the stray home it created contained:
+authtoken.secret
+controller.d
+identity.public
+identity.secret
+metrics.prom
+metricstoken.secret
+planet
+zerotier-one.pid
+zerotier-one.port

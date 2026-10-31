@@ -1,0 +1,51 @@
+Sources for the documented-only material in this guide
+=====================================================
+Read on 2026-10-30/31. The lab created no ZeroTier account and
+joined no real network; everything about ZeroTier Central below
+is described from these sources, never from use.
+
+Primary artefacts (shipped inside the zerotier-one 1.16.2 .deb
+itself, read in the lab):
+- zerotier-cli(1), zerotier-idtool(1), zerotier-one(8) manual
+  pages: identity model, home-directory files, moon commands,
+  join/authorize flow, API token mechanics.
+
+Download and verification chain:
+- https://download.zerotier.com/debian/noble/ (package pool,
+  dists/noble/Release + Release.gpg, main/binary-amd64/Packages)
+- https://install.zerotier.com (the official install script;
+  source of the repo signing key used to verify Release.gpg)
+
+ZeroTier's own writing:
+- ZeroTier Knowledge Base, "Rules Engine":
+  https://zerotier.crisp.help/en/article/rules-engine-kradl4/
+  (stateless engine, enforced by senders and receivers,
+  capabilities and tags)
+- ZeroTier's engineering article "The State of NAT Traversal"
+  (root servers relay first traffic and issue RENDEZVOUS hints;
+  roughly 4-8% of traffic ends up relayed) — read via a mirror
+  of the article.
+
+Vendor documentation of ZeroTier Central and its requirements
+(three independent vendors agreeing with each other):
+- MikroTik RouterOS ZeroTier documentation:
+  https://help.mikrotik.com/docs/pages/viewpage.action?pageId=120324120
+  (ports 9993 + two derived UDP ports; NAT recommendations;
+  controller config fields: managed routes, allow-default)
+- GL.iNet router docs, ZeroTier interface guide
+  (Central workflow: create network, join, authorise member,
+  managed IP)
+- Teltonika Networks wiki, ZeroTier configuration
+  (private access control means members stay offline until
+  authorised in Central)
+
+Controller configuration model (IPv4 auto-assign pools,
+managedRoutes target/via, dns domain+servers, IPv6 modes
+including RFC4193 and 6PLANE): the ZeroTier controller API's
+network object as documented by the open-source controller
+UIs (ZTNET, zero-ui) that implement against it.
+
+Note: https://docs.zerotier.com/ refused the lab's page reader
+(HTTP 403), so no claim in this guide rests on a page the lab
+could not open. Where the docs site is the canonical reference
+it is named as the place to read more, not cited as evidence.

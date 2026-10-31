@@ -1,0 +1,65 @@
+# t02 — The daemon's identity and what the CLI reports
+# Date: 2026-10-31 00:36 UTC
+
+$ cat ztroot/zerotier-one.port
+9993
+$ head -c 40 ztroot/identity.public   (address is the field before the first colon; truncated for the record)
+2076ee07cf:0:5c5991f7845c7d77c8dc77b965d...
+$ cut -d: -f1 ztroot/identity.public   (the full 10-character ZeroTier address — a public identifier, like a MAC address)
+2076ee07cf
+
+$ zerotier-cli -D<ztroot> info
+200 info 2076ee07cf 1.16.2 OFFLINE
+exit=0
+
+$ zerotier-cli -D<ztroot> listpeers
+200 listpeers <ztaddr> <path> <latency> <version> <role>
+200 listpeers 62f865ae71 - -1 - PLANET
+200 listpeers 778cde7190 - -1 - PLANET
+200 listpeers cafe04eba9 - -1 - PLANET
+200 listpeers cafe9efeb9 - -1 - PLANET
+exit=0
+
+$ zerotier-cli -D<ztroot> listnetworks
+200 listnetworks <nwid> <name> <mac> <status> <type> <dev> <ZT assigned ips>
+exit=0
+
+$ zerotier-cli -D<ztroot> status   (JSON form)
+{
+ "address": "2076ee07cf",
+ "clock": 1793406986619,
+ "config": {
+  "settings": {
+   "allowTcpFallbackRelay": true,
+   "forceTcpRelay": false,
+   "homeDir": "/home/hatch/workspace/zerotier-labwork/ztroot",
+   "listeningOn": [
+    "198.19.0.2/9993",
+    "198.19.0.2/40906",
+    "198.19.0.2/40925",
+    "fd8b:4f84:7d32:99::2/9993",
+    "fd8b:4f84:7d32:99::2/40906",
+    "fd8b:4f84:7d32:99::2/40925"
+   ],
+   "portMappingEnabled": true,
+   "primaryPort": 9993,
+   "secondaryPort": 40906,
+   "surfaceAddresses": [],
+   "tertiaryPort": 40925
+  }
+ },
+ "online": false,
+ "planetWorldId": 149604618,
+ "planetWorldTimestamp": 1644592324813,
+ "publicIdentity": "2076ee07cf:0:5c5991f7845c7d77c8dc77b965d599bb6348f0bd7dd387e57eba64475a498c5fa9ab9e125bf329c74634382b812dfbcb55ce7ba8f3703008ec8d1d97386bc754",
+ "tcpFallbackActive": false,
+ "version": "1.16.2",
+ "versionBuild": 0,
+ "versionMajor": 1,
+ "versionMinor": 16,
+ "versionRev": 2
+}
+
+$ zerotier-cli -D<ztroot> listmoons
+[]
+exit=0

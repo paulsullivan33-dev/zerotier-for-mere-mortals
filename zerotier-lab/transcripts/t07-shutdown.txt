@@ -1,0 +1,11 @@
+# t07 — Shutting the lab daemon down
+# Date: 2026-10-31 00:38 UTC
+$ kill $(cat ztroot/zerotier-one.pid)
+$ ps aux | grep zerotier-one | grep -v grep
+root       73246  0.2  0.1 975272 12380 ?        Ssl  00:36   0:00 /home/hatch/workspace/zerotier-labwork/rootfs/usr/sbin/zerotier-one /home/hatch/workspace/zerotier-labwork/ztroot
+$ curl -s -m 2 http://127.0.0.1:9993/status
+{}
+# A few seconds later (it exits gracefully, not instantly):
+$ ps -p <pid>  ->  no such process
+$ curl http://127.0.0.1:9993/status  ->  connection refused
+# Confirmed: no zerotier-one process remains and port 9993 is released.

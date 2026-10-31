@@ -1,0 +1,63 @@
+# t03 — The local control API, and why this lab stays OFFLINE
+# Date: 2026-10-31 00:36 UTC
+
+# The daemon is controlled over HTTP on 127.0.0.1:9993, guarded by a token
+# stored in authtoken.secret in its home. The token itself is never printed here.
+$ curl -s http://127.0.0.1:9993/status            (no token)
+{}
+HTTP 401
+$ curl -s -H "X-ZT1-Auth: <token>" http://127.0.0.1:9993/status
+{
+ "address": "2076ee07cf",
+ "online": false,
+ "version": "1.16.2",
+ "planetWorldId": 149604618,
+ "tcpFallbackActive": false
+}
+$ curl -s -H "X-ZT1-Auth: <token>" http://127.0.0.1:9993/peer
+[
+    {
+        "address": "62f865ae71",
+        "isBonded": false,
+        "latency": -1,
+        "paths": [],
+        "role": "PLANET",
+        "tunneled": false,
+        "version": "-1.-1.-1",
+        "versionMajor": -1,
+        "versionMinor": -1,
+        "versionRev": -1
+    },
+    {
+        "address": "778cde7190",
+        "isBonded": false,
+        "latency": -1,
+        "paths": [],
+        "role": "PLANET",
+        "tunneled": false,
+        "version": "-1.-1.-1",
+        "versionMajor": -1,
+        "versionMinor": -1,
+        "versionRev": -1
+    },
+    {
+        "address": "cafe04eba9",
+        "isBonded": false,
+        "latency": -1,
+        "paths": [],
+$ curl -s -H "X-ZT1-Auth: <token>" http://127.0.0.1:9993/network
+[]
+
+# A join attempt with an invented network ID goes nowhere here — watch why.
+$ zerotier-cli -D<ztroot> join deadbeefdeadbeef
+200 join OK
+exit=0
+$ zerotier-cli -D<ztroot> listnetworks   (a few seconds later)
+200 listnetworks <nwid> <name> <mac> <status> <type> <dev> <ZT assigned ips>
+$ ls ztroot/networks.d/
+deadbeefdeadbeef.conf
+$ zerotier-cli -D<ztroot> leave deadbeefdeadbeef
+200 leave OK
+exit=0
+$ zerotier-cli -D<ztroot> listnetworks
+200 listnetworks <nwid> <name> <mac> <status> <type> <dev> <ZT assigned ips>

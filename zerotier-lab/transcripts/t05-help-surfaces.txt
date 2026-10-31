@@ -1,0 +1,60 @@
+# t05 — The tools' own help text (what the binary actually offers)
+# Date: 2026-10-31 00:37 UTC
+
+$ zerotier-cli help
+ZeroTier One version 1.16.2 build 0 (platform 1 arch 2)
+Copyright (c) ZeroTier, Inc.
+
+Licensed under a Source-Available License for Non-Commercial
+Use (nonfree/LICENSE.md). Use of this build for Commercial Use
+requires a paid subscription plan or a commercial license
+agreement with ZeroTier, Inc. Visit https://www.zerotier.com for
+more information.
+
+Usage: /home/hatch/workspace/zerotier-labwork/rootfs/usr/sbin/zerotier-cli [-switches] <command/path> [<args>]
+
+Available switches:
+  -h                      - Display this help
+  -v                      - Show version
+  -j                      - Display full raw JSON output
+  -D<path>                - ZeroTier home path for parameter auto-detect
+  -p<port>                - HTTP port (default: auto)
+  -T<token>               - Authentication token (default: auto)
+
+Available commands:
+  info                    - Display status info
+  listpeers               - List all peers
+  peers                   - List all peers (prettier)
+  listnetworks            - List all networks
+  join <network ID>          - Join a network
+  leave <network ID>         - Leave a network
+  set <network ID> <setting> - Set a network setting
+  get <network ID> <setting> - Get a network setting
+  dump                    - Debug settings dump for support
+
+Available settings:
+  Settings to use with [get/set] may include property names from 
+  the JSON output of "zerotier-cli -j listnetworks". Additionally, 
+  (ip, ip4, ip6, ip6plane, and ip6prefix can be used). For instance:
+  zerotier-cli get <network ID> ip6plane will return the 6PLANE address
+  assigned to this node.
+
+$ zerotier-idtool   (no command: prints its command list)
+ZeroTier One version 1.16.2
+Copyright (c) ZeroTier, Inc.
+
+Licensed under a Source-Available License for Non-Commercial
+Use (nonfree/LICENSE.md). Use of this build for Commercial Use
+requires a paid subscription plan or a commercial license
+agreement with ZeroTier, Inc. Visit https://www.zerotier.com for
+more information.
+Usage: -i <command> [<args>]
+
+Commands:
+  generate [<identity.secret>] [<identity.public>] [<vanity>]
+  validate <identity.secret/public>
+  getpublic <identity.secret>
+  sign <identity.secret> <file>
+  verify <identity.secret/public> <file> <signature>
+  initmoon <identity.public of first seed>
+  genmoon <moon json>

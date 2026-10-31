@@ -1,0 +1,29 @@
+site_name: ZeroTier for Mere Mortals
+site_description: A network made of software — your machines plugged into one virtual Ethernet switch wherever on Earth they happen to be. Installing ZeroTier, identities and addresses, joining and being authorised, routes, rules and moons, with the limits stated plainly.
+site_url: https://paulsullivan33-dev.github.io/zerotier-for-mere-mortals/
+copyright: 'Part of <a href="https://paulsullivan33-dev.github.io/mere-mortals/">For Mere Mortals</a> · Text CC BY 4.0, code MIT'
+
+# Guides live at the repo root (nice for GitHub browsing).
+# The deploy workflow copies them into docs/ before building.
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - What ZeroTier Is: what-zerotier-is.md
+  - The Moving Parts: the-moving-parts.md
+  - Installing ZeroTier: installing-zerotier.md
+  - Identity — Your Address and Your Keys: identity-and-addresses.md
+  - Reading Your Node: reading-your-node.md
+  - Roots, Moons, Relays and Direct Paths: roots-moons-relays-and-direct-paths.md
+  - Networks and ZeroTier Central: networks-and-central.md
+  - Joining and Being Authorised: joining-and-authorising.md
+  - Addresses, Routes and DNS: addresses-routes-and-dns.md
+  - Rules, Capabilities and Tags: rules-capabilities-and-tags.md
+  - The Security Model: the-security-model.md
+  - Recipes: recipes.md
+  - The Neighbours: the-neighbours.md
+  - Limits: limits.md
+  - Troubleshooting: troubleshooting.md
+  - Glossary: glossary.md
+  - Writing Criteria: criteria.md
